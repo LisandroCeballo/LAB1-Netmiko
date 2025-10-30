@@ -1,0 +1,282 @@
+modelo:
+  metadatos:
+    proyecto: "LAB1"
+    version: "1.0"
+    autor: "L.Ceballo"
+    fecha_creacion: "2025-10-28"
+  infra_spec:
+    devices:
+      - hostname: "SW_Bld_A"
+        connection:
+          device_type: "cisco_ios"
+          host: "SW_Bld_A"
+          username: "utn"
+          password: "cisco123"
+          global_delay_factor: 1
+          ssh_config_file: "~/.ssh/config"
+        interfaces:
+          - name: "GigabitEthernet0/1"
+            description: "Conexion a SW_CORE_1"
+            mode: trunk
+            trunk_mode: auto
+            allowed_vlans: "10,20,30"
+            vlan: None
+          - name: GigabitEthernet0/2
+            description: "Conexion a SW_CORE_2"
+            mode: trunk
+            trunk_mode: auto
+            allowed_vlans: "10,20,30"
+            vlan: None
+          - name: GigabitEthernet0/3
+            description: "Conexion a PC_PROD_1"
+            mode: access
+            trunk_mode: None
+            allowed_vlans: None
+            vlan: 20
+        vlans:
+          - id: 10
+            name: "Ingenieria"
+          - id: 20
+            name: "Produccion"
+          - id: 30
+            name: "Finanzas"
+        stp:
+          mode: "rapid-pvst"
+          root_bridge:
+            enabled: true
+            priority: 4096 # Menor valor = mayor prioridad
+            vlan_range: "10,20,30"       
+        config_spec:
+          - data_path: "vlans"
+            template: "vlans.j2"
+            config_file: "vlan.cfg"
+          - data_path: "interfaces"
+            template: "int_trunk.j2"
+            config_file: "int_trunk.cfg"
+          - data_path: "interfaces"
+            template: "int_access.j2"
+            config_file: "int_access.cfg"
+          - data_path: "stp"
+            template: "stp.j2"
+            config_file: "stp.cfg"
+      - hostname: "SW_Bld_B"
+        connection:
+          device_type: "cisco_ios"
+          host: "192.168.130.204"
+          username: "utn"
+          password: "cisco123"
+          global_delay_factor: 1
+          ssh_config_file: "~/.ssh/config"
+        interfaces:
+          - name: "GigabitEthernet1/0"
+            description: "Conexion a SW_CORE_1"
+            mode: "trunk"
+            trunk_mode: "auto"
+            allowed_vlans: "10,20,30"
+            vlan: None
+          - name: "GigabitEthernet0/1"
+            description: "Conexion a SW_CORE_2"
+            mode: "trunk"
+            trunk_mode: "auto"
+            allowed_vlans: "10,20,30"
+            vlan: None
+          - name: GigabitEthernet0/3
+            description: "Conexion a PC_PROD_2"
+            mode: access
+            trunk_mode: None
+            allowed_vlans: None
+            vlan: 30
+        vlans:
+          - id: 10
+            name: "Ingenieria"
+          - id: 20
+            name: "Produccion"
+          - id: 30
+            name: "Finanzas"
+        stp:
+          mode: "rapid-pvst"
+          root_bridge:
+            enabled: true
+            priority: 4097 # Menor valor = mayor prioridad
+            vlan_range: "10,20,30"       
+        config_spec:
+          - data_path: "vlans"
+            template: "vlans.j2"
+            config_file: "vlan.cfg"
+          - data_path: "interfaces"
+            template: "int_trunk.j2"
+            config_file: "int_trunk.cfg"
+          - data_path: "interfaces"
+            template: "int_access.j2"
+            config_file: "int_access.cfg"
+          - data_path: "stp"
+            template: "stp.j2"
+            config_file: "stp.cfg"
+      - hostname: "SW-Data_Center"
+        connection:
+          device_type: "cisco_ios"
+          host: "SW-Data_Center"
+          username: "utn"
+          password: "cisco123"
+          global_delay_factor: 1
+          ssh_config_file: "~/.ssh/config"
+        interfaces:
+          - name: "GigabitEthernet0/2"
+            description: "Conexion a SW_CORE_1"
+            mode: trunk
+            trunk_mode: auto
+            allowed_vlans: "10,20,30"
+            vlan: None
+          - name: GigabitEthernet0/1
+            description: "Conexion a SW_CORE_2"
+            mode: trunk
+            trunk_mode: auto
+            allowed_vlans: "10,20,30"
+            vlan: None
+        vlans:
+          - id: 10
+            name: "Ingenieria"
+          - id: 20
+            name: "Produccion"
+          - id: 30
+            name: "Finanzas"
+        stp:
+          mode: "rapid-pvst"
+          root_bridge:
+            enabled: true
+            priority: 5000 # Menor valor = mayor prioridad
+            vlan_range: "10,20,30"       
+        config_spec:
+          - data_path: "vlans"
+            template: "vlans.j2"
+            config_file: "vlan.cfg"
+          - data_path: "interfaces"
+            template: "int_trunk.j2"
+            config_file: "int_trunk.cfg"
+          - data_path: "stp"
+            template: "stp.j2"
+            config_file: "stp.cfg"
+      - hostname: "SW-SW_CORE_1"
+        connection:
+          device_type: "cisco_ios"
+          host: "192.168.130.201"
+          username: "utn"
+          password: "cisco123"
+          global_delay_factor: 1
+          ssh_config_file: "~/.ssh/config"
+        interfaces:
+          - name: "GigabitEthernet0/3"
+            description: "Conexion a SW_Bld_A"
+            mode: "trunk"
+            trunk_mode: "auto"
+            allowed_vlans: "10,20,30"
+            vlan: None
+          - name: "GigabitEthernet1/0"
+            description: "Conexion a SW_Bld_B"
+            mode: "trunk"
+            trunk_mode: "auto"
+            allowed_vlans: "10,20,30"
+            vlan: None
+          - name: "GigabitEthernet1/1"
+            description: "Conexion a SW_Data_Center"
+            mode: "trunk"
+            trunk_mode: "auto"
+            allowed_vlans: "10,20,30"
+            vlan: None        
+        port_channels:
+          - id: 1
+            description: "Enlace LACP a SW_CORE_2"
+            members:
+              - "GigabitEthernet0/1"
+              - "GigabitEthernet0/2"
+            mode: "active"
+            trunk:
+              allowed_vlans: "10,20,30"  
+        vlans:
+          - id: 10
+            name: "Ingenieria"
+          - id: 20
+            name: "Produccion"
+          - id: 30
+            name: "Finanzas"
+        stp:
+          mode: "rapid-pvst"
+          root_bridge:
+            enabled: true
+            priority: 4094 # Menor valor = mayor prioridad
+            vlan_range: "10,20,30"       
+        config_spec:
+          - data_path: "vlans"
+            template: "vlans.j2"
+            config_file: "vlan.cfg"
+          - data_path: "interfaces"
+            template: "int_trunk.j2"
+            config_file: "int_trunk.cfg"
+          - data_path: "stp"
+            template: "stp.j2"
+            config_file: "stp.cfg"
+          - data_path: "port_channels"
+            template: "lacp_trunk.j2"
+            config_file: "lacp_trunk.cfg"
+      - hostname: "SW-SW_CORE_2"
+        connection:
+          device_type: "cisco_ios"
+          host: "192.168.130.202"
+          username: "utn"
+          password: "cisco123"
+          global_delay_factor: 1
+          ssh_config_file: "~/.ssh/config"
+        interfaces:
+          - name: "GigabitEthernet0/3"
+            description: "Conexion a SW_Bld_A"
+            mode: "trunk"
+            trunk_mode: "auto"
+            allowed_vlans: "10,20,30"
+            vlan: None
+          - name: "GigabitEthernet1/0"
+            description: "Conexion a SW_Bld_B"
+            mode: "trunk"
+            trunk_mode: "auto"
+            allowed_vlans: "10,20,30"
+            vlan: None
+          - name: "GigabitEthernet1/1"
+            description: "Conexion a SW_Data_Center"
+            mode: "trunk"
+            trunk_mode: "auto"
+            allowed_vlans: "10,20,30"
+            vlan: None
+        port_channels:
+          - id: 1
+            description: "Enlace LACP a SW_CORE_1"
+            members:
+              - "GigabitEthernet0/1"
+              - "GigabitEthernet0/2"
+            mode: "passive"
+            trunk:
+              allowed_vlans: "10,20,30"
+        vlans:
+          - id: 10
+            name: "Ingenieria"
+          - id: 20
+            name: "Produccion"
+          - id: 30
+            name: "Finanzas"
+        stp:
+          mode: "rapid-pvst"
+          root_bridge:
+            enabled: true
+            priority: 4090 # Menor valor = mayor prioridad
+            vlan_range: "10,20,30"       
+        config_spec:
+          - data_path: "vlans"
+            template: "vlans.j2"
+            config_file: "vlan.cfg"
+          - data_path: "interfaces"
+            template: "int_trunk.j2"
+            config_file: "int_trunk.cfg"
+          - data_path: "stp"
+            template: "stp.j2"
+            config_file: "stp.cfg"
+          - data_path: "port_channels"
+            template: "lacp_trunk.j2"
+            config_file: "lacp_trunk.cfg"

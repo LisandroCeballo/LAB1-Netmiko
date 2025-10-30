@@ -1,0 +1,24 @@
+{# ========================================= #}
+{# Configuración de Port-Channels con LACP   #}
+{# ========================================= #}
+!
+{% for pc in port_channels -%}
+  {# Configurando Port-Channel {{ pc.id }} #}
+interface Port-channel{{ pc.id }}
+ description {{ pc.description }}
+ switchport
+ switchport mode trunk
+ switchport trunk allowed vlan {{ pc.trunk.allowed_vlans }}
+  {% if pc.trunk.native_vlan -%}
+ switchport trunk native vlan {{ pc.trunk.native_vlan }}
+  {% endif -%}
+!
+  {# Agregando interfaces físicas al Port-Channel #}
+  {% for intf in pc.members -%}
+interface {{ intf }}
+ description Miembro de Port-Channel {{ pc.id }}
+ channel-group {{ pc.id }} mode {{ pc.mode }}
+!
+  {% endfor -%}
+{% endfor -%}
+

@@ -1,0 +1,16 @@
+{# ============================== #}
+{# Configuración Spanning Tree    #}
+{# ============================== #}
+!
+spanning-tree mode {{ stp.mode }}
+!
+{% if stp.root_bridge.enabled -%}
+  {# Configurar Root Bridge #}
+  {% if stp.root_bridge.vlan_range -%}
+spanning-tree vlan {{ stp.root_bridge.vlan_range }} priority {{ stp.root_bridge.priority }}
+  {% else -%}
+spanning-tree vlan 1 priority {{ stp.root_bridge.priority }}
+  {% endif -%}
+!
+{% endif -%}
+
